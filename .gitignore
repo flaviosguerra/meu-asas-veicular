@@ -1,0 +1,11 @@
+# Variáveis de ambiente (dados sensíveis)
+.env
+.env.local
+.env.*.local
+
+# Dependências
+node_modules/
+
+# Logs e cache
+*.log
+.DS_Store
