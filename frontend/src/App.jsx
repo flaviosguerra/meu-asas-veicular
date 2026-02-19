@@ -1,21 +1,19 @@
 import { useState } from 'react'
 
-const API_URL = 'http://localhost:3001'
-
 function App() {
-  const [placa, setPlaca] = useState('')
-  const [resultado, setResultado] = useState(null)
-  const [carregando, setCarregando] = useState(false)
-  const [erro, setErro] = useState(null)
+  const [plate, setPlate] = useState('')
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleConsultar = async (e) => {
+  const handleSearchVehicleByPlate = async (e) => {
     e.preventDefault()
-    setResultado(null)
-    setErro(null)
-    setCarregando(true)
+    setLoading(true)
+    setError(null)
+    setData(null)
 
     try {
-      const response = await fetch(`${API_URL}/consultar-placa/${placa.trim().toUpperCase()}`, {
+      const response = await fetch(`/api/vehicles/search/${plate.trim().toUpperCase()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -24,15 +22,16 @@ function App() {
 
       const data = await response.json()
 
-      if (data.sucesso) {
-        setResultado(data.dados)
+      if (data.success) {
+        setData(data.data)
       } else {
-        setErro(data.erro || 'Erro na consulta')
+        setError(data.error || 'Erro na consulta')
       }
     } catch (err) {
-      setErro('Não foi possível conectar ao servidor. Verifique se o backend está rodando.')
+      console.error('Erro na requisição:', err)
+      setError('Não foi possível conectar ao servidor. Verifique se o backend está rodando.')
     } finally {
-      setCarregando(false)
+      setLoading(false)
     }
   }
 
@@ -42,31 +41,34 @@ function App() {
         <h1 style={styles.titulo}>Meu Asas Veicular</h1>
         <p style={styles.subtitulo}>Consulta de Placas</p>
 
-        <form onSubmit={handleConsultar} style={styles.form}>
+        <form onSubmit={handleSearchVehicleByPlate} style={styles.form}>
           <label style={styles.label}>Placa</label>
           <input
             type="text"
-            value={placa}
-            onChange={(e) => setPlaca(e.target.value)}
+            value={plate}
+            onChange={(e) => setPlate(e.target.value)}
             placeholder="Ex: ABC1234"
             maxLength={7}
             style={styles.input}
-            disabled={carregando}
+            disabled={loading}
           />
-          <button type="submit" style={styles.botao} disabled={carregando}>
-            {carregando ? 'Consultando...' : 'Consultar'}
+          <button type="submit" style={styles.botao} disabled={loading}>
+            {loading ? 'Consultando...' : 'Consultar'}
           </button>
         </form>
 
-        {erro && (
-          <div style={styles.erro}>{erro}</div>
+        {error && (
+          <div style={styles.erro}>{error}</div>
         )}
 
-        {resultado && (
+        {data && (
           <div style={styles.resultado}>
             <h3 style={styles.resultadoTitulo}>Resultado</h3>
-            <p><strong>Marca:</strong> {resultado.Marca}</p>
-            <p><strong>Modelo:</strong> {resultado.Modelo}</p>
+            <p><strong>Placa:</strong> {data.placa}</p>
+            <p><strong>Marca:</strong> {data.marca}</p>
+            <p><strong>Modelo:</strong> {data.modelo}</p>
+            <p><strong>Ano:</strong> {data.ano}</p>
+            <p><strong>Cor:</strong> {data.cor}</p>
           </div>
         )}
       </div>

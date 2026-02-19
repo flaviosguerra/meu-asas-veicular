@@ -13,4 +13,3 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseKey);
-console.log('SUPABASE',supabase)

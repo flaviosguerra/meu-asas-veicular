@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "teste": "npx ts-node teste.ts",
-    "start": "npx ts-node server.ts"
+    "start": "npx ts-node ./src/main.ts"
   },
   "keywords": [],
   "author": "",
